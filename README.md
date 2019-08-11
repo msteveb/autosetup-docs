@@ -49,14 +49,14 @@ git repository somewhere and run (note that `AUTOSETUP` is a path to the
 actual autosetup script):
 
 ```
-$ make AUTOSETUP=&lt;path-to-autosetup-git>/autosetup
+$ make AUTOSETUP=<path-to-autosetup-git>/autosetup
 ```
 
 To update the github pages, checkout the autosetup git repository somewhere
 on branch **gh-pages** and run:
 
 ```
-$ make PUBLISH_URL=&lt;path-to-autosetup-gh-pages-git>
+$ make PUBLISH_URL=<path-to-autosetup-gh-pages-git>
 ```
 
 The commit the changes on the gh-pages branch.
