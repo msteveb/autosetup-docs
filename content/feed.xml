@@ -1,0 +1,6 @@
+---
+title: autosetup News
+author_name: steveb@workware.net.au
+author_uri: mailto:steveb@workware.net.au
+---
+<%= atom_feed :limit => @config[:rss_feed_count].to_i %>

@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+$debug = false
+
+compile '/css/*.css' do
+  dputs 'css: ' + item.identifier
+  filter :relativize_paths, type: :css
+  write item.identifier
+end
+
+compile '/**/*.xml' do
+  dputs 'xml: ' + item.identifier
+  filter :erb
+  filter :relativize_paths, type: :html5
+  write item.identifier
+end
+
+compile '/**/*.md' do
+  filter :erb
+  filter :sourcecode
+  filter :kramdown
+  layout item[:layout] || '/default.*'
+  filter :relativize_paths, type: :html5
+  write item_linkname(item) + 'index.html'
+  dputs 'markdown: ' + item.identifier + ' => ' + item_linkname(item) + 'index.html'
+end
+
+compile '/**/*' do
+  dputs 'copy: ' + item.identifier
+  write item.identifier
+end
+
+layout '/**/*', :erb
+
+preprocess do
+    @items.each do |item|
+        if is_article(item)
+            item[:kind] = "article"
+            item[:created_at] = derive_created_at(item)
+            item[:uuid] = item.identifier.without_ext.to_s.split('/')[-1];
+            dputs "article: " + item[:uuid]
+        end
+    end
+end

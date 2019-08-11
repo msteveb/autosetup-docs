@@ -1,0 +1,6 @@
+<p class="articledate"><%= pretty_time(derive_created_at(item)) %></p>
+<h2 class="news"><a href="<%= @item.identifier.without_ext.to_s + '/' %>"><%= @item[:title] %></a></h2>
+
+<% unless titleonly %>
+<%= content || item.compiled_content(:snapshot => :pre) %>
+<%end%>
