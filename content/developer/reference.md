@@ -2,13 +2,13 @@
 title: Command Reference
 ---
 
-autosetup v0.6.9 -- Command Reference
+autosetup v0.7.0 -- Command Reference
 =====================================
 
 Introduction
 ------------
 
-See [http://msteveb.github.io/autosetup/](http://msteveb.github.io/autosetup/) for the online documentation for **`autosetup`**
+See [http://msteveb.github.com/autosetup/](http://msteveb.github.com/autosetup/) for the online documentation for **`autosetup`**
 
 **`autosetup`** provides a number of built-in commands which are documented below. These may be used from **`auto.def`** to test for features, define variables, create files from templates and other similar actions.
 
@@ -61,7 +61,7 @@ define myname [opt-str {myopt altname} o "/usr/local"]
 
 ### `module-options optionlist`
 
-Like **`options`**, but used within a module.
+Deprecated. Simply use **`options`** from within a module.
 
 ### `options optionspec`
 
@@ -75,13 +75,15 @@ name[=0|1]  => "Description of this boolean option"
 
 The default is **`name=0`**, meaning that the option is disabled by default. If **`name=1`** is used to make the option enabled by default, the description should reflect that with text like "Disable support for ...".
 
-An argument option (one which takes a parameter) is of the form:
+An argument option (one which takes a parameter) is of one of the following forms:
 
 ~~~~~~~~~~~~
-name:[=]value  => "Description of this option"
+name:value         => "Description of this option"
+name:value=default => "Description of this option with a default value"
+name:=value        => "Description of this option with an optional value"
 ~~~~~~~~~~~~
 
-If the **`name:value`** form is used, the value must be provided with the option (as **`--name=myvalue`**). If the **`name:=value`** form is used, the value is optional and the given value is used as the default if it is not provided.
+If the **`name:value`** form is used, the value must be provided with the option (as **`--name=myvalue`**). If the **`name:value=default`** form is used, the option has the given default value even if not specified by the user. If the **`name:=value`** form is used, the value is optional and the given value is used if it is not provided.
 
 The description may contain **`@default@`**, in which case it will be replaced with the default value for the option (taking into account defaults specified with **`options-defaults`**.
 
@@ -532,6 +534,18 @@ If not found, returns 0.
 Convenience access to the results of **`pkg-config`**.
 
 For example, **`[pkg-config-get pango CFLAGS]`** returns the value of **`PKG_PANGO_CFLAGS`**, or **`""`** if not defined.
+
+### `pkg-config-get-var module variable`
+
+Return the value of the given variable from the given pkg-config module. The module must already have been successfully detected with pkg-config. e.g.
+
+~~~~~~~~~~~~
+if {[pkg-config harfbuzz >= 2.5]} {
+  define harfbuzz_libdir [pkg-config-get-var harfbuzz libdir]
+}
+~~~~~~~~~~~~
+
+Returns the empty string if the variable isn't defined.
 
 Module: system
 --------------
