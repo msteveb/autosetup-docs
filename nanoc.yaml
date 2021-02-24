@@ -3,7 +3,7 @@ rss_feed_count: 20
 analytics: UA-23178588-3
 
 # Need this for the RSS feed
-base_url: http://msteveb.github.com/autosetup
+base_url: http://msteveb.github.io/autosetup
 
 # A list of file extensions that Nanoc will consider to be textual rather than
 # binary. If an item with an extension not in this list is found,  the file

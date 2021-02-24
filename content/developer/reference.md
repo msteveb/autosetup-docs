@@ -8,7 +8,7 @@ autosetup v0.6.9 -- Command Reference
 Introduction
 ------------
 
-See [http://msteveb.github.com/autosetup/](http://msteveb.github.com/autosetup/) for the online documentation for **`autosetup`**
+See [http://msteveb.github.io/autosetup/](http://msteveb.github.io/autosetup/) for the online documentation for **`autosetup`**
 
 **`autosetup`** provides a number of built-in commands which are documented below. These may be used from **`auto.def`** to test for features, define variables, create files from templates and other similar actions.
 

@@ -5,7 +5,7 @@ date: 2011-07-14
 
 Recently the [Fossil SCM](http://fossil-scm.org/) has been adopted
 by [Tcl/Tk](http://wiki.tcl.tk/) as a replacement for CVS.  Now the
-Tcl-based [autosetup](http://msteveb.github.com/autosetup/) has
+Tcl-based [autosetup](http://msteveb.github.io/autosetup/) has
 been adopted as the development configuration system for
 [Fossil](http://www.fossil-scm.org/).
 
