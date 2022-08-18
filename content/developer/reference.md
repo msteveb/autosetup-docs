@@ -2,18 +2,21 @@
 title: Command Reference
 ---
 
-autosetup v0.7.0 -- Command Reference
+autosetup v0.7.1 -- Command Reference
 =====================================
 
 Introduction
 ------------
 
-See [http://msteveb.github.com/autosetup/](http://msteveb.github.com/autosetup/) for the online documentation for **`autosetup`**
+See [http://msteveb.github.com/autosetup/](http://msteveb.github.com/autosetup/) for the online documentation for **`autosetup`**. This documentation can also be accessed locally with `autosetup --ref`.
 
 **`autosetup`** provides a number of built-in commands which are documented below. These may be used from **`auto.def`** to test for features, define variables, create files from templates and other similar actions.
 
 Core Commands
 -------------
+
+Option Handling
+---------------
 
 ### `opt-bool ?-nodefault? option ...`
 
@@ -99,9 +102,22 @@ lfs=1 largefile=1 => "Disable large file support"
 
 Specifies a dictionary of options and a new default value for each of those options. Use before any **`use`** statements in **`auto.def`** to change the defaults for subsequently included modules.
 
+Variable Definitions (defines)
+------------------------------
+
 ### `define name ?value=1?`
 
 Defines the named variable to the given value. These (name, value) pairs represent the results of the configuration check and are available to be subsequently checked, modified and substituted.
+
+### `define-push {name ...} script`
+
+Save the values of the given defines, evaluation the script, then restore. For example, to avoid updating AS_FLAGS and AS_CXXFLAGS:
+
+~~~~~~~~~~~~
+define-push {AS_CFLAGS AS_CXXFLAGS} {
+  cc-check-flags -Wno-error
+}
+~~~~~~~~~~~~
 
 ### `undefine name`
 
@@ -129,6 +145,9 @@ Returns a dictionary (name, value list) of all defined variables.
 
 This is suitable for use with **`dict`**, **`array set`** or **`foreach`** and allows for arbitrary processing of the defined variables.
 
+Environment/Helpers
+-------------------
+
 ### `get-env name default`
 
 If **`$name`** was specified on the command line, return it. Otherwise if **`$name`** was set in the environment, return it. Otherwise return **`$default`**.
@@ -149,6 +168,9 @@ Creates the given file containing **`$value`**. Does not add an extra newline.
 
 Returns a copy of the given list with empty elements removed
 
+Paths, Searching
+----------------
+
 ### `find-executable-path name`
 
 Searches the path for an executable with the given name. Note that the name may include some parameters, e.g. **`cc -mbig-endian`**, in which case the parameters are ignored. The full path to the executable if found, or "" if not found. Returns 1 if found, or 0 if not.
@@ -162,6 +184,9 @@ Searches the path for an executable with the given name. Note that the name may 
 Given a list of possible executable names, searches for one of these on the path.
 
 Returns the name found, or "" if none found. If the first parameter is **`-required`**, an error is generated if no executable is found.
+
+Logging, Messages and Errors
+----------------------------
 
 ### `configlog msg`
 
@@ -193,6 +218,9 @@ Output the given message to stderr.
 
 Checks the current version of **`autosetup`** against **`$required`**. A fatal error is generated if the current version is less than that required.
 
+Modules Support
+---------------
+
 ### `use module ...`
 
 Load the given library modules. e.g. **`use cc cc-shared`**
@@ -200,6 +228,9 @@ Load the given library modules. e.g. **`use cc cc-shared`**
 Note that module **`X`** is implemented in either **`autosetup/X.tcl`** or **`autosetup/X/init.tcl`**
 
 The latter form is useful for a complex module which requires additional support file. In this form, **`$::usedir`** is set to the module directory when it is loaded.
+
+Utilities
+---------
 
 ### `compare-versions version1 version2`
 
@@ -253,9 +284,11 @@ CC       - C compiler
 CXX      - C++ compiler
 CPP      - C preprocessor
 CCACHE   - Set to "none" to disable automatic use of ccache
+CPPFLAGS  - Additional C preprocessor compiler flags (C and C++), before CFLAGS, CXXFLAGS
 CFLAGS   - Additional C compiler flags
 CXXFLAGS - Additional C++ compiler flags
 LDFLAGS  - Additional compiler flags during linking
+LINKFLAGS - ?How is this different from LDFLAGS?
 LIBS     - Additional libraries to use (for all tests)
 CROSS    - Tool prefix for cross compilation
 ~~~~~~~~~~~~
@@ -263,8 +296,6 @@ CROSS    - Tool prefix for cross compilation
 The following variables are defined from the corresponding environment variables if set.
 
 ~~~~~~~~~~~~
-CPPFLAGS
-LINKFLAGS
 CC_FOR_BUILD
 LD
 ~~~~~~~~~~~~
@@ -362,6 +393,14 @@ cc-with {-libs {-lc -lm}} {
 }
 ~~~~~~~~~~~~
 
+If you wish to invoke something like cc-check-flags but not have -cflags updated, use the following idiom:
+
+~~~~~~~~~~~~
+cc-with {} {
+  cc-check-flags ...
+}
+~~~~~~~~~~~~
+
 ### `cctest ?settings?`
 
 Low level C/C++ compiler checker. Compiles and or links a small C program according to the arguments and returns 1 if OK, or 0 if not.
@@ -385,17 +424,25 @@ Unless **`-source`** or **`-sourcefile`** is specified, the C program looks like
 
 ~~~~~~~~~~~~
 #include <firstinclude>   /* same for remaining includes in the list */
-~~~~~~~~~~~~
-
-~~~~~~~~~~~~
 declare-code              /* any code in -declare, verbatim */
-~~~~~~~~~~~~
-
-~~~~~~~~~~~~
 int main(void) {
   code                    /* any code in -code, verbatim */
   return 0;
 }
+~~~~~~~~~~~~
+
+And the command line looks like:
+
+~~~~~~~~~~~~
+CC -cflags CFLAGS CPPFLAGS conftest.c -o conftest.o
+CXX -cflags CXXFLAGS CPPFLAGS conftest.cpp -o conftest.o
+~~~~~~~~~~~~
+
+And if linking:
+
+~~~~~~~~~~~~
+CC LDFLAGS -cflags CFLAGS conftest.c -o conftest -libs LIBS
+CXX LDFLAGS -cflags CXXFLAGS conftest.c -o conftest -libs LIBS
 ~~~~~~~~~~~~
 
 Any failures are recorded in **`config.log`**
@@ -450,11 +497,11 @@ Returns 1 if determined, or 0 if not.
 
 ### `cc-check-flags flag ?...?`
 
-Checks whether the given C/C++ compiler flags can be used. Defines feature names prefixed with **`HAVE_CFLAG`** and **`HAVE_CXXFLAG`** respectively, and appends working flags to **`-cflags`** and **`CFLAGS`** or **`CXXFLAGS`**.
+Checks whether the given C/C++ compiler flags can be used. Defines feature names prefixed with **`HAVE_CFLAG`** and **`HAVE_CXXFLAG`** respectively, and appends working flags to **`-cflags`** and **`AS_CFLAGS`** or **`AS_CXXFLAGS`**.
 
 ### `cc-check-standards ver ?...?`
 
-Checks whether the C/C++ compiler accepts one of the specified **`-std=$ver`** options, and appends the first working one to **`-cflags`** and **`CFLAGS`** or **`CXXFLAGS`**.
+Checks whether the C/C++ compiler accepts one of the specified **`-std=$ver`** options, and appends the first working one to **`-cflags`** and **`AS_CFLAGS`** or **`AS_CXXFLAGS`**.
 
 ### `cc-check-c11`
 
@@ -566,7 +613,7 @@ mandir
 includedir
 ~~~~~~~~~~~~
 
-If **`--prefix`** is not supplied, it defaults to **`/usr/local`** unless **`defaultprefix`** is defined *before* including the **`system`** module.
+If **`--prefix`** is not supplied, it defaults to **`/usr/local`** unless **`options-defaults { prefix ... }`** is used *before* including the **`system`** module.
 
 ### `check-feature name { script }`
 
