@@ -41,7 +41,7 @@
         <%end%>
         </div>
         <div class="main" id="<%= item[:pageid] || "main" %>">
-        <% if item[:article] %>
+        <% if item[:kind] == "article" %>
             <p class="articledate"><%= pretty_time(derive_created_at(item)) %></p>
             <h2 class="news"><%= @item[:title] %></h2>
         <%end%>
