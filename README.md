@@ -9,14 +9,14 @@ Installation
 In order to build the documentation you will need:
 
 * [nanoc v4.11](https://nanoc.ws) static website generator
-* ruby v2.4 or later
+* ruby v2.7 or later
 
 I have:
 
 ```
 $ nanoc --version
-Nanoc 4.11.5 © 2007–2019 Denis Defreyne.
-Running ruby 2.6.3 (2019-04-16) on x86_64-darwin17 with RubyGems 3.0.3.
+Nanoc 4.12.7 © 2007–2022 Denis Defreyne.
+Running ruby 2.7.0 (2019-12-25) on x86_64-darwin20 with RubyGems 3.3.20.
 ```
 
 See the nanoc installation documentation for installation with **gem**.
@@ -25,14 +25,17 @@ following installed:
 
 ```
 $ gem list --local
-adsf (1.4.2)
-kramdown (2.1.0)
-nanoc (4.11.5)
-nanoc-core (4.11.5)
-nokogiri (1.10.3)
-nokogumbo (2.0.1)
+adsf (1.4.3)
+kramdown (2.3.0)
+nanoc (4.11.19)
+nanoc-checking (1.0.0)
+nanoc-cli (4.11.19)
+nanoc-core (4.11.19)
+nanoc-deploying (1.0.0)
+nokogiri (1.10.1)
+nokogumbo (2.0.2)
 ref (2.0.0)
-zeitwerk (2.1.6)
+zeitwerk (2.4.1)
 ```
 
 Building
