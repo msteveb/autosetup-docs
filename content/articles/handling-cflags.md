@@ -139,7 +139,6 @@ make we can do:
 # Use configure versions if not set during make
 CFLAGS ?= @CFLAGS@
 CPPFLAGS ?= @CPPFLAGS@
-CFlAG
 # ensure we get the ordering we need
 COMPILE.c = $(CC) @AS_CFLAGS@ @AS_CPPFLAGS@ $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 ==
@@ -160,4 +159,4 @@ Alternatively replace the rule entirely:
 
 This is implemented in [examples/typical/Makefile.in](https://github.com/msteveb/autosetup/blob/master/examples/typical/Makefile.in)
 If you have a suggestion why one Makefile approach is better than the others, please
-make a comment on this page.
+make a comment in Discussions(https://github.com/msteveb/autosetup/discussions).
