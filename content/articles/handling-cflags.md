@@ -159,4 +159,4 @@ Alternatively replace the rule entirely:
 
 This is implemented in [examples/typical/Makefile.in](https://github.com/msteveb/autosetup/blob/master/examples/typical/Makefile.in)
 If you have a suggestion why one Makefile approach is better than the others, please
-make a comment in Discussions(https://github.com/msteveb/autosetup/discussions).
+make a comment in [Discussions](https://github.com/msteveb/autosetup/discussions).
